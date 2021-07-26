@@ -1,0 +1,20 @@
+.qr-image {
+    position: relative;
+    display: inline-block;
+}
+.qr-swoosh {
+    background: url("../images/swoosh.png");
+    position: absolute;
+    top: -30px;
+    width: 100%;
+    height: 100%;
+    left: -55%;
+    background-repeat: no-repeat;
+    background-size: 50% 50%;
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+}
+@page {
+   size: auto;
+   margin: 0;
+}

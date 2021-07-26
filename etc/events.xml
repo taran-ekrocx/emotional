@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="checkout_submit_all_after">
+        <observer name="ecqr_sales_order_place_after" instance="Ec\Qr\Observer\OrderPlaceAfter" />
+    </event>
+    <event name="sales_quote_remove_item">
+        <observer name="ecqr_sales_quote_remove_item" instance="Ec\Qr\Observer\CartRemoveItem" />
+    </event>
+    <event name="sales_quote_item_qty_set_after">
+        <observer name="ecqr_sales_quote_add_item" instance="Ec\Qr\Observer\CartAddItem" />
+    </event>
+    <event name="catalog_product_save_after">
+        <observer name="ecqr_catalog_product_save_after" instance="Ec\Qr\Observer\UpdatePrice" />
+    </event>
+</config>

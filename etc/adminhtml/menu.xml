@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+         <add id="Ec_Qr::config"
+              title="Emotional Commerce"
+              module="Ec_Qr"
+              sortOrder="20"
+              resource="Magento_Backend::content"
+          />
+         <add id="Ec_Qr::config_child"
+              title="Configuration"
+              module="Ec_Qr"
+              sortOrder="1"
+              action="ecqr/config"
+              parent="Ec_Qr::config"
+              resource="Magento_Backend::content"
+          />
+         <add id="Ec_Qr::instructions_child"
+              title="Instructions"
+              module="Ec_Qr"
+              sortOrder="10"
+              action="ecqr/instructions"
+              parent="Ec_Qr::config"
+              resource="Magento_Backend::content"
+          />
+    </menu>
+</config>

@@ -1,0 +1,71 @@
+.ec-form p label {
+    display: block;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+}
+.danger {
+    color: #ff0000;
+    font-weight: bold;
+    font-size: 18px;
+}
+.col-title {
+    font-size: 20px;
+    border: 1px solid #d9d9d9;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #f7f7f7;
+    text-transform: uppercase;
+    height: 50px;
+    line-height: 50px;
+    text-indent: 15px;
+}
+.red {
+    color: #ff0000;
+    padding-left: 5px;
+}
+.col-body {
+    border: 1px solid #d9d9d9;
+    padding-left: 15px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.col-body input {
+    height: 40px;
+    line-height: 40px;
+    border-radius: 5px;
+    text-indent: 10px;
+    border: 1px solid #d9d9d9;
+    width: 420px;
+}
+.col-body textarea {
+    line-height: 40px;
+    border-radius: 5px;
+    text-indent: 10px;
+    border: 1px solid #d9d9d9;
+    width: 420px;
+    height: 80px;
+}
+#submit {
+    width: 150px;
+    height: 45px;
+    border-radius: 5px;
+    margin-top: 15px;
+    background-color: #ef7100;
+    color: white;
+    border: none;
+    font-size: 20px;
+}
+.sp-container {
+    min-height: 300px;
+}
+.col-body select {
+    width: 420px;
+    background: white;
+    height: 40px;
+    border: 1px solid #d9d9d9;
+    text-indent: 5px;
+}
+#button-color, #button-background {
+    display: block !important;
+}

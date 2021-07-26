@@ -1,0 +1,186 @@
+<div class="ec-form">
+<?php
+$config = $this->getConfig();
+
+if (!$config['key'] || !$config['secret'] || !$config['domain']):
+    ?>
+    <form action="<?= $this->getInstallActionUrl() ?>" method="post" enctype="multipart/form-data">
+        <?php echo $this->getBlockHtml('formkey') ?>
+        <p>
+            <label for="key">Key<span class="red">*</span></label>
+            <input name="key" type="text" placeholder="Key" value="<?= $config['key'] ?>" required/>
+        </p>
+        <p>
+            <label for="secret">Secret<span class="red">*</span></label>
+            <input name="secret" type="text" placeholder="Secret" value="<?= $config['secret'] ?>" required/>
+        </p>
+        <p>
+            <label for="domain">Domain<span class="red">*</span></label>
+            <input name="domain" type="text" placeholder="Domain" value="<?= $config['domain'] ?>" required/>
+            <label><span class="red">subdomain</span>.emotionalcommerce.com</label>
+        </p>
+
+        <input type="submit" value="Save"/>
+    </form>
+<?php
+else:
+    $campaigns = $this->getCampaigns($config['key'], $config['secret'], $config['domain']);
+    ?>
+    <form action="<?= $this->getActionUrl() ?>" method="post" enctype="multipart/form-data">
+        <?php echo $this->getBlockHtml('formkey') ?>
+        <div data-mage-init='{"accordion":{"openedState": "active", "collapsible": true, "active": false, "multipleCollapsible": false}}'>
+            <div data-role="collapsible">
+                <div class="col-title" data-role="trigger">
+                    Api
+                </div>
+            </div>
+            <div data-role="content" class="col-body">
+                <p>
+                    <label for="key">Key<span class="red">*</span></label>
+                    <input name="key" type="text" placeholder="Key" value="<?= $config['key'] ?>" required/>
+                </p>
+                <p>
+                    <label for="secret">Secret<span class="red">*</span></label>
+                    <input name="secret" type="text" placeholder="Secret" value="<?= $config['secret'] ?>" required/>
+                </p>
+                <p>
+                    <label for="domain">SubDomain<span class="red">*</span></label>
+                    <input name="domain" type="text" placeholder="Domain" value="<?= $config['domain'] ?>" required/>
+                    <label><span class="red">subdomain</span>.emotionalcommerce.com</label>
+                </p>
+            </div>
+            <?php
+            if (!$campaigns): echo '<p class="danger">Something went wrong, please make sure you have the correct api key, secret, and domain.</p>';
+            else:
+            ?>
+            <div data-role="collapsible">
+                <div class="col-title"  data-role="trigger">
+                    Configuration
+                </div>
+            </div>
+            <div data-role="content" class="col-body">
+                <p>
+                    <label for="enabled">Enabled<span class="red">*</span></label>
+                    <select name="enabled" required>
+                            <option
+                                value="1"
+                                <?php if ($config['enabled']): echo 'selected'; endif ?>
+                            >
+                                Yes
+                            </option>
+                        <option
+                            value="0"
+                            <?php if (!$config['enabled']): echo 'selected'; endif ?>
+                        >
+                            No
+                        </option>
+                    </select>
+                </p>
+                <p>
+                    <label for="price">Price<span class="red">*</span></label>
+                    <input name="price" type="number" step="0.01" placeholder="Price" value="<?= $config['price'] ?>" required/>
+                </p>
+                <p>
+                    <label for="campaign">Campaign<span class="red">*</span></label>
+                    <select name="campaign" required>
+                        <option value="">Select Campaign</option>
+                        <?php foreach ($campaigns['data'] as $campaign): ?>
+                            <option
+                                value="<?= $campaign['id'] ?>"
+                                <?php if ($config['campaign'] == $campaign['id']): echo 'selected'; endif ?>
+                            >
+                                <?= $campaign['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </p>
+                <p>
+                    <label for="width">QR width in px</label>
+                    <input name="width" type="number" placeholder="Width" value="<?= $config['width'] ?>" />
+                </p>
+            </div>
+            <div  class="col-title" data-role="collapsible">
+                <div data-role="trigger">
+                    Template
+                </div>
+            </div>
+            <div data-role="content" class="col-body">
+                <p>
+                    <label for="qr-title">QR Title</label>
+                    <input name="qr-title" type="text" placeholder="QR Title" value="<?= $config['qr-title'] ?>" />
+                </p>
+                <p>
+                    <label for="template">Add {{qr}} where you want to display the qr<span class="red">*</span></label>
+                    <label for="template">Add {{qr-title}} where you want to display the qr title</label>
+                    <textarea name="template" id="template" required><?= $config['template'] ?></textarea>
+                </p>
+            </div>
+            <div  class="col-title" data-role="collapsible">
+                <div data-role="trigger">
+                    Frontend
+                </div>
+            </div>
+            <div data-role="content" class="col-body">
+                <p>
+                    <label for="title">Title</label>
+                    <input name="title" type="text" placeholder="Title" value="<?= $config['title'] ?>" />
+                </p>
+                <p>
+                    <label for="subtitle">User Instructions</label>
+                    <textarea name="subtitle"><?= $config['subtitle'] ?></textarea>
+                </p>
+                <p>
+                    <label for="button-title">Button Title</label>
+                    <input name="button-title" type="text" placeholder="Button Title" value="<?= $config['button-title'] ?>" />
+                </p>
+                <p>
+                    <label for="button-color">Button Text Color</label>
+                    <input name="button-color" id="button-color" type="text" placeholder="Button Text Color" value="<?= $config['button-color'] ?>" />
+                </p>
+                <p>
+                    <label for="button-background">Button Background</label>
+                    <input name="button-background" id="button-background" type="text" placeholder="Button Background" value="<?= $config['button-background'] ?>" />
+                </p>
+            </div>
+        </div>
+        <?php endif ?>
+        <input id="submit" type="submit" value="Save"/>
+    </form>
+<?php
+endif
+?>
+</div>
+<script>
+    require([
+        "jquery",
+        "mage/translate",
+        "mage/adminhtml/events",
+        "mage/adminhtml/wysiwyg/tiny_mce/setup",
+        "spectrum"
+    ], function ($) {
+        wysiwygcompany_description = new wysiwygSetup("template", {
+            "width": "99%",
+            "height": "200px",
+            "plugins": [{"name": "textcolor"}],
+            "tinymce4": {
+                "toolbar": "fontselect | formatselect | forecolor backcolor bold italic underline | alignleft aligncenter alignright | bullist numlist | link charmap",
+                "plugins": "advlist autolink lists link charmap media noneditable table contextmenu paste code help",
+            }
+        });
+        wysiwygcompany_description.setup("exact");
+        $(document).ready(function (){
+            $("#button-color").spectrum({
+                type: "text",
+                showAlpha: "false",
+                preferredFormat: "hex",
+                showInput: "true"
+            });
+            $("#button-background").spectrum({
+                type: "text",
+                showAlpha: "false",
+                preferredFormat: "hex",
+                showInput: "true"
+            });
+        });
+    });
+</script>

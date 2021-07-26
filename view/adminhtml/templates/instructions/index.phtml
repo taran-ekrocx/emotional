@@ -1,0 +1,33 @@
+<div class="ec-form">
+<div>
+    <div data-role="collapsible">
+        <div class="col-title" data-role="trigger">
+            Instructions
+        </div>
+    </div>
+    <div data-role="content" class="col-body">
+        <p>
+            <label for="key">Installation<span class="red">*</span></label>
+        </p>
+        <p>
+            To add the QR template into you custom page: <br />
+            In your layout XML file example for invoice <span class="red">sales_order_invoice_view.xml</span> in <span class="red">app/code/{vendorname}/{company}/view/adminhtml/layout</span> </br>
+            Add the following code inside the block you want to reference, for this example in the order info in the invoice we add inside <span class="red">&lt;referenceBlock name="order_info"&gt;</span> <br />
+            Add <span class="red">&lt;block class="Ec\Qr\Block\Adminhtml\Order\Printqr" template="Ec_Qr::order/printqr.phtml"/&gt;</span> </br>
+            You will also need to inject the css in the head of the page: <span class="red">&lt;css src="Ec_Qr::css/ec.css"/&gt;</span>
+            So the code would look like the below:<br /><br />
+            &lt;?xml version="1.0"?&gt; <br />
+&lt;page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd" label="Email Order Items List" design_abstraction="custom"&gt; <br />
+    &lt;head&gt;<br />
+    <span class="red">&lt;css src="Ec_Qr::css/ec.css"/&gt;</span><br />
+    &lt;/head&gt;<br />
+    &lt;body&gt;<br />
+	&lt;referenceBlock name="order_info"&gt;<br />
+	     <span class="red">&lt;block class="Ec\Qr\Block\Adminhtml\Order\Printqr" template="Ec_Qr::order/printqr.phtml"/&gt;</span><br />
+	&lt;/referenceBlock&gt;<br />
+    &lt;/body&gt;<br />
+&lt;/page&gt;<br />
+        </p>
+    </div>
+</div>
+</div>

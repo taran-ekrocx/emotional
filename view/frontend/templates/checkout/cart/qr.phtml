@@ -1,0 +1,195 @@
+<?php
+$config = $this->getConfig();
+if ($config['campaign'] && $this->canShow() && $config['enabled']):
+?>
+<div class="main-qr-button-wrapper">
+    <img class="main-button-icon" src="<?php echo $this->getViewFileUrl('Ec_Qr::images/icon-video.svg'); ?>" />
+    <button type="button" id="qr-modal-btn" class="action primary checkout"
+            style="
+                <?php if ($config['button-background']){echo 'background-color: '. $config['button-background'] .';border-color:'.$config['button-background'].';';} ?>
+                <?php if ($config['button-color']){echo 'color: '. $config['button-color'] .';';} ?>
+            "
+    >
+        <span><?= $config['button-title'] ?></span>
+    </button>
+</div>
+<div id="qr-modal-content">
+    <div class="modal-inner-content">
+        <div class="qr-video">
+            <form method="POST" id="ecForm" enctype="multipart/form-data" action="<?php echo $this->getUrl('ecqr/index/post'); ?>" data-hasrequired="<?php echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+                <div class="form-wrapper">
+                    <div class="image-wrapper">
+                        <img src="<?php echo $this->getViewFileUrl('Ec_Qr::images/popup-image.png'); ?>" />
+                    </div>
+                    <p class="modal-text">
+                        <?= nl2br($config['subtitle']) ?>
+                    </p>
+                    <fieldset class="fieldset">
+                        <div class="field name required">
+                            <div class="record-wrapper">
+                                <video id="live" muted class="live_video mymodal-img" style="display:none"></video>
+                                <span class="live_video mymodal-recording-tag" style="display:none">
+                                    <?= __('Video Recording') ?>
+                                </span>
+                                <video id="recording" controls class="video_display mymodal-img" style="display:none"></video>
+                                <span class="video_display mymodal-recording-tag" style="display:none">
+                                    <?= __('Recorded Clip') ?>
+                                </span>
+                            </div>
+                            <div class="control modal-text">
+                                <div class="upload-button" id="record">
+                                    <img src="<?php echo $this->getViewFileUrl('Ec_Qr::images/popup-record.svg'); ?>" />
+                                    <?= __('Record Video') ?>
+                                </div>
+                                <div class="upload-button" id="stop">
+                                    <img src="<?php echo $this->getViewFileUrl('Ec_Qr::images/popup-record.svg'); ?>" />
+                                    <?= __('Stop Recording') ?>
+                                </div>
+                                <div class="upload-button" id="remove" style="display:none;">
+                                    <?= __('Remove Video') ?>
+                                </div>
+                                <span class="mymodal-recording-tag" id="filename" style="display:none;"></span>
+                                <div class="upload-button" id="upload-button">
+                                    <img src="<?php echo $this->getViewFileUrl('Ec_Qr::images/popup-upload.svg'); ?>" />
+                                    <?= __('Upload Video') ?>
+                                </div>
+                                <input id="blob" name="blob" type="hidden" />
+                                <input name="video" id="video" value="" class="input-text" type="file" data-validate="{required:true}"/>
+                            </div>
+                        </div>
+                        <div class="actions-toolbar">
+                            <span class="mymodal-recording-tag error" style="display:none">
+                                <?= __('Please Upload or Record a Video') ?>
+                            </span>
+                            <div id="submit" class="action submit primary"
+                                    style="
+                                    <?php if ($config['button-background']){echo 'background-color: '. $config['button-background'] .';border-color:'.$config['button-background'].';';} ?>
+                                    <?php if ($config['button-color']){echo 'color: '. $config['button-color'] .';';} ?>
+                                        "
+                            >
+                                <span><?php echo __('Submit') ?></span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    require(["jquery", "Magento_Ui/js/modal/modal", "loader"],function($, modal) {
+        var options = {
+            type: 'popup', // popup or slide
+            responsive: true, // true = on smaller screens the modal slides in from the right
+            title: '<?= $config['title'] ?>',
+            buttons: []
+        };
+        var popup = modal(options, $('#qr-modal-content'));
+        $("#qr-modal-btn").click(function() {
+            $('#qr-modal-content').show();
+            $('#qr-modal-content').modal('openModal');
+        });
+        $('#video').change(function() {
+            var file = $('#video')[0].files[0].name;
+            $('#filename').show().text(file);
+        });
+        $('#submit').on('click', function (e){
+            $('body').trigger('processStart');
+            if ($('#blob').val() == 1) {
+              var data = new FormData();
+              data.append('file', blob_data, 'file.webm');
+              $.ajax({
+                  url :  "<?php echo $this->getUrl('ecqr/index/upload'); ?>",
+                  type: 'POST',
+                  data: data,
+                  contentType: false,
+                  processData: false,
+                  success: function(data) {
+                      $('#blob').val(data.name);
+                      $('#ecForm').submit();
+                  }
+              });
+            } else if ($('#video').get(0).files.length !== 0) {
+                $('#ecForm').submit();
+            } else {
+                $('.error').show();
+                $('body').trigger('processStop');
+            }
+        });
+        $("#close").on("click",function(){
+            $('#qr-modal-content').modal('closeModal');
+        });
+        $('#upload-button').on('click', function(){
+            $('#blob').val('');
+            $('#live').hide();
+            $('.video_display').hide();
+            $('#video').trigger('click');
+            $('.error').hide();
+        });
+        $('#remove').on('click', function() {
+            $('#filename').text('');
+            $('#video').val(null);
+            $('#upload-button').show();
+            $(".video_display").hide();
+            $(this).hide();
+            var video = document.getElementById('recording');
+            video.pause();
+            $('#blob').val('');
+        });
+        var recordButton, stopButton, recorder, liveStream;
+    		recordButton = document.getElementById('record');
+    		stopButton = document.getElementById('stop');
+    		recordButton.addEventListener('click', startRecording);
+    		stopButton.addEventListener('click', stopRecording);
+    		function startRecording() {
+      			navigator.mediaDevices.getUserMedia({
+        				audio: true,
+        				video: true
+      			})
+    				.then(function (stream) {
+      					liveStream = stream;
+      					var liveVideo = document.getElementById('live');
+      					// liveVideo.src = URL.createObjectURL(stream);
+      					// liveVideo.play();
+      					liveVideo.srcObject = stream;
+      					liveVideo.play();
+
+      					recorder = new MediaRecorder(liveStream);
+      					recorder.addEventListener('dataavailable', onRecordingReady);
+      					$(".video_display").hide();
+      					$("#popup_image").hide();
+      					$(".live_video").show();
+      					$("#upload-file-btn").hide();
+      					$("#record").hide();
+      					$("#stop").show();
+                $("#filename").hide().text('');
+                $('#video').val(null);
+                $('#upload-button').hide();
+      					recorder.start();
+                $('#submit').hide();
+                $('.error').hide();
+    				});
+    		}
+    		function stopRecording() {
+      			recorder.stop();
+      			$("#record").show();
+      			$("#stop").hide();
+      			$('#remove').show();
+      			$('#upload-file-btn').hide();
+            $('#submit').show();
+    		}
+    		function onRecordingReady(e) {
+            var video = document.getElementById('recording');
+            video.src = URL.createObjectURL(e.data);
+            video.play();
+            $(".video_display").show();
+            $(".live_video").hide();
+            blob_data = e.data;
+            $('#blob').val(1);
+            $('#remove').show();
+    		}
+    });
+</script>
+
+<?php endif; ?>
