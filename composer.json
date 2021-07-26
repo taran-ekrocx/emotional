@@ -1,5 +1,5 @@
 {
-    "name": "ec/qr",
+    "name": "taran-ekrocx/emotional",
 	"description": "A module that allows the customer to upload a video on the cart page as an emotional messages",
     "require": {
         "php": "~7.1.0|~7.2.0|~7.3.0",
