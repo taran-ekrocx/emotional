@@ -1,6 +1,7 @@
 {
     "name": "taran-ekrocx/emotional",
-	"description": "A module that allows the customer to upload a video on the cart page as an emotional messages",
+    "description": "A module that allows the customer to upload a video on the cart page as an emotional messages",
+    "minimum-stability": "dev",
     "require": {
         "php": "~7.1.0|~7.2.0|~7.3.0",
 		"magento/framework": "101.0.*|102.0.*"
